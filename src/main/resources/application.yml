@@ -7,10 +7,15 @@ spring:
     host: 127.0.0.1
     port: 6379
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/wd7?characterEncoding=UTF-8
+    url: jdbc:mysql://127.0.0.1:3306/wd71?characterEncoding=UTF-8
     username: root
     password: baicai@930715
     driver-class-name: com.mysql.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
   devtools:
     restart:
       enabled: true
@@ -25,5 +30,5 @@ logging:
 
 mybatis:
   mapperLocations: classpath:mapper/*.xml
-  typeAliasesPackage: com.cjs.example.entity
+  typeAliasesPackage: com.wd7.sso.entity
 

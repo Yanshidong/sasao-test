@@ -1,0 +1,29 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+spring:
+  redis:
+    host: 127.0.0.1
+    port: 6379
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/wd7?characterEncoding=UTF-8
+    username: root
+    password: baicai@930715
+    driver-class-name: com.mysql.jdbc.Driver
+  devtools:
+    restart:
+      enabled: true
+
+
+logging:
+  level:
+    root: info
+    org.springframework.web: info
+    org.springframework.security: debug
+    com.cjs.example.dao: info
+
+mybatis:
+  mapperLocations: classpath:mapper/*.xml
+  typeAliasesPackage: com.cjs.example.entity
+

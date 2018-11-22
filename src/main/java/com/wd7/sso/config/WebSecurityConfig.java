@@ -42,10 +42,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .anyRequest().authenticated()
-            .and()
-                .formLogin().and()
-                .httpBasic()
-            .and().rememberMe()
+            .and().oauth2Login()
+
 
         ;
 

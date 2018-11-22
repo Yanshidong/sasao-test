@@ -1,9 +1,11 @@
 package com.wd7.sso.config;
 
+import com.wd7.sso.support.MyClientDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
@@ -23,6 +25,10 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     @Autowired
     private RedisConnectionFactory connectionFactory;
+
+    @Autowired
+    private MyClientDetailsService myClientDetailsService;
+
 
     @Resource
     private DataSource dataSource;
@@ -46,16 +52,19 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         //endregion
 
         //region 将 client信息 写jdbc,在表 oauth_client_details
-        clients.jdbc(dataSource);
+//        clients.jdbc(dataSource);
 
         //endregion
-
+        clients.withClientDetails(myClientDetailsService);
     }
 
     //配置token存储位置
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+        //设置token存储
         endpoints.tokenStore(tokenStore());
+//        endpoints.setClientDetailsService(myClientDetailsService);
+
     }
 
     @Bean

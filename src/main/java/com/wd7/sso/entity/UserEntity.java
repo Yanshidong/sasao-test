@@ -18,13 +18,13 @@ public class UserEntity implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected   Integer id;
-    protected   String  username;
-    protected   String  password;
-    protected   boolean accountNonExpired;
-    protected   boolean accountNonLocked;
-    protected   boolean credentialsNonExpired;
-    protected   boolean enabled;
+    private    Integer id;
+    private    String  username;
+    private    String  password;
+    private    boolean accountNonExpired;
+    private    boolean accountNonLocked;
+    private    boolean credentialsNonExpired;
+    private    boolean enabled;
 
 
 }

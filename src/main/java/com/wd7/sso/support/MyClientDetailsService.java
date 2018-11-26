@@ -32,7 +32,6 @@ public class MyClientDetailsService implements ClientDetailsService {
 //        authorities.add("");
         additionalInfomation.put("name","这里是测试client");
 
-
         clientDetails.setClientId("barClientIdPassword");
         clientDetails.setResourceIds(resourceIds);
         clientDetails.setClientSecret("$2a$10$CfgefMFbRVygtavhRyJqzOLUQtHO58Vvwt3aQq/Cpj9Yguc/D9Zse");

@@ -6,6 +6,7 @@ import com.wd7.sso.entity.UserEntity;
 import org.codehaus.jackson.map.util.JSONPObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.web.bind.annotation.*;
@@ -39,8 +40,9 @@ public class MainController {
 
     @PreAuthorize(value = "hasAuthority('"+ defines.AUTHORITY_USER_ADD+"')")
     @RequestMapping("/sayHi")
-    public String sayHi() {
-        return "hahaha,欢迎admin来到此页;";
+    public String sayHi(Authentication authentication) {
+
+        return "hahaha,欢迎"+(authentication.getPrincipal().toString())+"来到此页;";
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -55,6 +57,12 @@ public class MainController {
         return  sysUserRepository.getOne(id).toString();
     }
 
+
+    @RequestMapping(value = "/login")
+    public String userLogin()
+    {
+        return "/my/login";
+    }
 
 
 

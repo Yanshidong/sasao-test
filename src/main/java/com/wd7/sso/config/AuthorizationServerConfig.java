@@ -12,6 +12,8 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.approval.JdbcApprovalStore;
+import org.springframework.security.oauth2.provider.endpoint.AuthorizationEndpoint;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 
@@ -36,6 +38,12 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
         super.configure(security);
+//        security.realm("realm?")
+
+
+
+        ;
+
     }
     //配置clientDetails 存储位置
     @Override
@@ -55,7 +63,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 //        clients.jdbc(dataSource);
 
         //endregion
-        clients.withClientDetails(myClientDetailsService);
+        clients.withClientDetails(myClientDetailsService)
+                ;
+
     }
 
     //配置token存储位置
@@ -64,6 +74,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         //设置token存储
         endpoints.tokenStore(tokenStore());
 //        endpoints.setClientDetailsService(myClientDetailsService);
+        endpoints.approvalStore(new JdbcApprovalStore(dataSource));
+
 
     }
 

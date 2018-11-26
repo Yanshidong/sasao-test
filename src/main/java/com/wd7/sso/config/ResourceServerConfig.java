@@ -24,10 +24,18 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
      */
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        http.requestMatchers().antMatchers("/index/**")
-                .and()
-                .authorizeRequests()
-                .anyRequest().authenticated();
+//        http
+//                .requestMatchers()
+//                .antMatchers("/index/**")
+//                .and()
+//                .authorizeRequests()
+//                .anyRequest().authenticated();
+//        super.configure(http);
+        http.requestMatchers()
+                .antMatchers("/resources/") //指定资源被拦截
+                .antMatchers("/patch/**")  //指定资源被拦截
+                .and().authorizeRequests().anyRequest().authenticated()
+                ;
     }
 
 }

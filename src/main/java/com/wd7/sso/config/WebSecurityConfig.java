@@ -61,19 +61,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/logout","/login","/my/login").permitAll()
                 .anyRequest().authenticated()
             .and().formLogin()
-                .successHandler(customAuthenticationSuccessHandler)//登录成功的后续处理,日志等
+//                .successHandler(customAuthenticationSuccessHandler)//登录成功的后续处理,日志等
 //                .loginPage("/index/login")
                     .permitAll()//配置login页面
             .and().httpBasic()
             .and().rememberMe()
-            .and()
-                .logout()
+//            .and()
+//                .logout()
 //                  .logoutUrl("/my/logout")
-                    .logoutSuccessHandler(customLogoutSuccessHandler)//RestAPI调用时直接给个状态码返回
+//                    .logoutSuccessHandler(customLogoutSuccessHandler)//RestAPI调用时直接给个状态码返回
 //                    .logoutRequestMatcher()
 //                      .logoutSuccessHandler(customLogoutSuccessHandler)//自定义登出后续处理
 //                        .logoutSuccessHandler(forwardLogoutSuccessHandler)
-//                  .logoutSuccessUrl("/my/login").permitAll()
+//                  .logoutSuccessUrl("/my/login")
+//                      .permitAll()
             .and()
                 .csrf()
                     .disable() //logout必备选项，据说不disable就要全post,可是为什么我post就不行捏

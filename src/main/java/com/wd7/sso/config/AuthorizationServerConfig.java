@@ -75,6 +75,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         endpoints.tokenStore(tokenStore());
 //        endpoints.setClientDetailsService(myClientDetailsService);
         endpoints.approvalStore(new JdbcApprovalStore(dataSource));
+//        endpoints.approvalStoreDisabled();
 
 
     }

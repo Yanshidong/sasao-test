@@ -13,8 +13,10 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.approval.JdbcApprovalStore;
+import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationManager;
 import org.springframework.security.oauth2.provider.endpoint.AuthorizationEndpoint;
 import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 
 import javax.annotation.Resource;
@@ -32,14 +34,16 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     private MyClientDetailsService myClientDetailsService;
 
 
+    AuthenticationManager authenticationManager=new OAuth2AuthenticationManager();
+
     @Resource
     private DataSource dataSource;
 
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
         super.configure(security);
-//        security.realm("realm?")
 
+//        security.realm("realm?")
 
 
         ;
@@ -76,6 +80,11 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 //        endpoints.setClientDetailsService(myClientDetailsService);
         endpoints.approvalStore(new JdbcApprovalStore(dataSource));
 //        endpoints.approvalStoreDisabled();
+        endpoints
+                .authenticationManager(authenticationManager)
+//                .tokenEnhancer(accessTokenConverter())
+                .tokenStore(tokenStore())
+        ;
 
 
     }
@@ -85,5 +94,10 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         return new RedisTokenStore(connectionFactory);
     }
 
+//    @Bean
+//    public JwtAccessTokenConverter accessTokenConverter() {
+//        JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
+//        return converter;
+//    }
 
 }

@@ -1,8 +1,13 @@
 package com.wd7.sso.hadler;
 
+import com.sun.deploy.net.HttpResponse;
+import com.sun.xml.internal.ws.server.sei.MessageFiller;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.security.web.savedrequest.DefaultSavedRequest;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -10,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
+public class CustomAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
     org.slf4j.Logger logger= LoggerFactory.getLogger(CustomAuthenticationSuccessHandler.class);
     /**
      * Called when a user has been successfully authenticated.
@@ -21,10 +26,11 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
      */
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        logger.info("**********:AuthenticationSuccess logger start:*******************");
-        logger.info("principal::"+(authentication.getPrincipal()==null?"null":authentication.getPrincipal().toString()));
-        logger.info("authorities::"+(authentication.getAuthorities()==null?"null":authentication.getAuthorities().toString()));
-        logger.info("credentials::"+(authentication.getCredentials()==null?"null":authentication.getCredentials().toString()));
-        logger.info("details::"+(authentication.getDetails()==null?"null":authentication.getDetails().toString()));
+
+       super.onAuthenticationSuccess(request,response,authentication);
+
+
+
+
     }
 }

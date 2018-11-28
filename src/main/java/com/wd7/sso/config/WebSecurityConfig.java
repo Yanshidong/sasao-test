@@ -14,14 +14,21 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.token.auth.DefaultClientAuthenticationHandler;
 import org.springframework.security.oauth2.provider.ClientRegistrationService;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.*;
 import org.springframework.security.web.authentication.logout.ForwardLogoutSuccessHandler;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @Configuration
 @EnableWebSecurity
@@ -36,6 +43,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+
         auth.userDetailsService(myUserDetailsService).passwordEncoder(passwordEncoder())
 
         ;
@@ -50,30 +58,46 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        ForwardAuthenticationSuccessHandler forwardAuthenticationSuccessHandler=new ForwardAuthenticationSuccessHandler("http://127.0.0.1:8080/index/sayHi");
+        AuthenticationSuccessHandler customAuthenticationSuccessHandler=new CustomAuthenticationSuccessHandler();
+        SimpleUrlAuthenticationSuccessHandler simpleUrlAuthenticationSuccessHandler=new SimpleUrlAuthenticationSuccessHandler();
+        SavedRequestAwareAuthenticationSuccessHandler savedRequestAwareAuthenticationSuccessHandler=new SavedRequestAwareAuthenticationSuccessHandler();
+
+        SimpleUrlAuthenticationFailureHandler simpleUrlAuthenticationFailureHandler=new SimpleUrlAuthenticationFailureHandler();
+        ExceptionMappingAuthenticationFailureHandler exceptionMappingAuthenticationFailureHandler=new ExceptionMappingAuthenticationFailureHandler();
+//        DelegatingAuthenticationFailureHandler delegatingAuthenticationFailureHandler=new DelegatingAuthenticationFailureHandler();
+
 
         HttpStatusReturningLogoutSuccessHandler httpStatusReturningLogoutSuccessHandler=new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK);
         SimpleUrlLogoutSuccessHandler simpleUrlLogoutSuccessHandler=new SimpleUrlLogoutSuccessHandler();
         ForwardLogoutSuccessHandler forwardLogoutSuccessHandler=new ForwardLogoutSuccessHandler("http://www.baidu.com");
-        AuthenticationSuccessHandler customAuthenticationSuccessHandler=new CustomAuthenticationSuccessHandler();
         LogoutSuccessHandler customLogoutSuccessHandler=new CustomLogoutSuccessHandler();
+
+
+
         http
                 .authorizeRequests()    //以这个开头，然后配置需要放行的url，最后拦截其他所有url
                 .antMatchers("/logout","/login","/my/login").permitAll()
                 .anyRequest().authenticated()
             .and().formLogin()
-//                .successHandler(customAuthenticationSuccessHandler)//登录成功的后续处理,日志等
+                .successHandler(customAuthenticationSuccessHandler)//登录成功的后续处理,日志等
+//                  .successHandler(forwardAuthenticationSuccessHandler)
+//                .successHandler(simpleUrlAuthenticationSuccessHandler)
+//                .successHandler(savedRequestAwareAuthenticationSuccessHandler)
+//                  .successHandler()
 //                .loginPage("/index/login")
+//                .failureForwardUrl("/login?loginfail=loginfail")
+                .failureHandler(exceptionMappingAuthenticationFailureHandler)
                     .permitAll()//配置login页面
             .and().httpBasic()
             .and().rememberMe()
-            .and()
-                .logout()
-//                  .logoutUrl("/my/logout")
+            .and().logout()
+                  .logoutUrl("/my/logout")
                     .logoutSuccessHandler(customLogoutSuccessHandler)//RestAPI调用时直接给个状态码返回
 //                    .logoutRequestMatcher()
-//                      .logoutSuccessHandler(customLogoutSuccessHandler)//自定义登出后续处理
-//                        .logoutSuccessHandler(forwardLogoutSuccessHandler)
-//                  .logoutSuccessUrl("/my/login")
+//                      .logoutSuccessHandler(simpleUrlLogoutSuccessHandler)//自定义登出后续处理
+                        .logoutSuccessHandler(forwardLogoutSuccessHandler)//重定向
+                  .logoutSuccessUrl("/login?logout=logout")
                       .permitAll()
             .and()
                 .csrf()
@@ -86,6 +110,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 
 
 }

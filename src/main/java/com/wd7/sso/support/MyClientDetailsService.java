@@ -24,16 +24,18 @@ public class MyClientDetailsService implements ClientDetailsService {
 
         resourceIds.add("oauth2-resource");
         scopes.add("userInfo:view");
-        scopes.add("userInfo:add");
+//        scopes.add("userInfo:add");
         authorizationGrantTypes.add("password");
         authorizationGrantTypes.add("authorization_code");
         authorizationGrantTypes.add("refresh_token");
+        authorizationGrantTypes.add("client_credentials");
+
         registeredRedirectUri.add("https://www.getpostman.com/oauth2/callback");
 //        authorities.add("");
         additionalInfomation.put("name","这里是测试client");
 
         clientDetails.setClientId("barClientIdPassword");
-        clientDetails.setResourceIds(resourceIds);
+        clientDetails.setResourceIds(resourceIds);//secret
         clientDetails.setClientSecret("$2a$10$CfgefMFbRVygtavhRyJqzOLUQtHO58Vvwt3aQq/Cpj9Yguc/D9Zse");
         clientDetails.setScope(scopes);
         clientDetails.setAuthorizedGrantTypes(authorizationGrantTypes);

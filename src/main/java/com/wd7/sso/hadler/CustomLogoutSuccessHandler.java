@@ -17,5 +17,6 @@ public class CustomLogoutSuccessHandler extends AbstractAuthenticationTargetUrlR
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         super.handle(request,response,authentication);
 
+
     }
 }

@@ -1,8 +1,10 @@
 package com.wd7.sso.controller;
 
+import com.wd7.sso.config.WebSecurityConfig;
 import com.wd7.sso.dao.SysUserRepository;
 import com.wd7.sso.defines.defines;
 import com.wd7.sso.entity.UserEntity;
+import org.apache.tomcat.util.descriptor.web.ContextHandler;
 import org.codehaus.jackson.map.util.JSONPObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -10,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.web.bind.annotation.*;
+import org.thymeleaf.spring5.util.SpringContentTypeUtils;
 
 import java.security.Principal;
 
@@ -63,6 +66,7 @@ public class MainController {
     {
         return "/my/login";
     }
+
 
 
 

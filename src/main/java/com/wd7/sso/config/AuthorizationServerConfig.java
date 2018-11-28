@@ -1,5 +1,6 @@
 package com.wd7.sso.config;
 
+import com.wd7.sso.securityHandlerImpl.CustomRandomKeyGenerator;
 import com.wd7.sso.support.MyClientDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +16,7 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.provider.approval.JdbcApprovalStore;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationManager;
 import org.springframework.security.oauth2.provider.endpoint.AuthorizationEndpoint;
+import org.springframework.security.oauth2.provider.token.AuthenticationKeyGenerator;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
@@ -42,9 +44,17 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
         super.configure(security);
+        security
+                .tokenKeyAccess("permitAll()")
+                .checkTokenAccess("isAuthenticated()")
+                .allowFormAuthenticationForClients()
+                .passwordEncoder(new BCryptPasswordEncoder());
+
+
+
 
 //        security.realm("realm?")
-
+//        security.checkTokenAccess();//这里是token校验的？
 
         ;
 
@@ -57,8 +67,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 //        clients.inMemory()
 //                .withClient("barClientIdPassword")
 //                .secret(bCryptPasswordEncoder.encode("secret"))
-//                .authorizedGrantTypes("authorization_code", "refresh_token")
-//                .scopes("read", "write", "execute")
+//                .authorizedGrantTypes("authorization_code", "refresh_token","password")
+//                .scopes("userInfo:view", "userInfo:add", "execute")
 //                .redirectUris("https://www.getpostman.com/oauth2/callback")
         ;
         //endregion
@@ -78,12 +88,13 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         //设置token存储
         endpoints.tokenStore(tokenStore());
 //        endpoints.setClientDetailsService(myClientDetailsService);
-        endpoints.approvalStore(new JdbcApprovalStore(dataSource));
+        endpoints.approvalStore(new JdbcApprovalStore(dataSource))
+
 //        endpoints.approvalStoreDisabled();
-        endpoints
+//        endpoints
                 .authenticationManager(authenticationManager)
 //                .tokenEnhancer(accessTokenConverter())
-                .tokenStore(tokenStore())
+//                .tokenStore(tokenStore())
         ;
 
 
@@ -91,7 +102,10 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     @Bean
     public TokenStore tokenStore() {
-        return new RedisTokenStore(connectionFactory);
+
+        RedisTokenStore redisTokenStore= new RedisTokenStore(connectionFactory);
+//        redisTokenStore.setAuthenticationKeyGenerator(new CustomRandomKeyGenerator());
+        return redisTokenStore;
     }
 
 //    @Bean

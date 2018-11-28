@@ -7,8 +7,8 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.expression.OAuth2WebSecurityExpressionHandler;
 
-@Configuration
-@EnableResourceServer
+//@Configuration
+//@EnableResourceServer
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Override
@@ -31,10 +31,13 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 //                .authorizeRequests()
 //                .anyRequest().authenticated();
 //        super.configure(http);
-        http.requestMatchers()
-                .antMatchers("/resources/") //指定资源被拦截
-                .antMatchers("/patch/**")  //指定资源被拦截
-                .and().authorizeRequests().anyRequest().authenticated()
+//        http.requestMatchers()
+//                .antMatchers("/resources/") //指定资源被拦截
+//                .antMatchers("/patch/**")  //指定资源被拦截
+//                .and().authorizeRequests().antMatchers("/resources/") //指定资源被拦截
+//                .antMatchers("/patch/**")  //指定资源被拦截
+//                .authenticated()
+
                 ;
     }
 

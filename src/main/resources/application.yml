@@ -25,9 +25,9 @@ spring:
 logging:
   level:
     root: info
-    org.springframework.web: info
+    org.springframework.web: debug
     org.springframework.security: debug
-    com.cjs.example.dao: info
+#    com.cjs.example.dao: info
 
 mybatis:
   mapperLocations: classpath:mapper/*.xml

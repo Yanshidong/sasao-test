@@ -41,7 +41,6 @@ public class MyAuthorizationCodeServices  extends RandomValueAuthorizationCodeSe
             }
         });
 
-
     }
 
     @Override

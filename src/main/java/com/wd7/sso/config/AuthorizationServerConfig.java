@@ -102,18 +102,22 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         TokenEnhancerChain  tokenEnhancerChain=new TokenEnhancerChain();
 
         //设置token存储
-        endpoints.tokenStore(tokenStore());
+        endpoints.tokenStore(tokenStore()) //redis
 
-//        endpoints.setClientDetailsService(myClientDetailsService);
-        endpoints.approvalStore(new JdbcApprovalStore(dataSource)) //jdbc
+
+//        .setClientDetailsService(myClientDetailsService);
+
+        .approvalStore(new JdbcApprovalStore(dataSource)) //jdbc
 
         .authenticationManager(authenticationManager) //默认
 
-        .userDetailsService(userDetailsService) //默认
+        .userDetailsService(userDetailsService) //jdbc.redis随意。
 
-        .authorizationCodeServices(myAuthorizationCodeServices) //jdbc
+        .authorizationCodeServices(myAuthorizationCodeServices) //redis,这东西读写 code
 
         .tokenEnhancer(tokenEnhancerChain)
+
+
 
 
 //        endpoints.approvalStoreDisabled();

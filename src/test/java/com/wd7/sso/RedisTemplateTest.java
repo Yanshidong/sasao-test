@@ -38,14 +38,7 @@ public class RedisTemplateTest {
     public void testRedisSet()
     {
         AUser user=new AUser(1,"er",true);
-//        user.setBoy(true);
-//        user.setIn(1);
-//        user.setName("er");
 
-//        StringRedisSerializer stringRedisSerializer=new StringRedisSerializer();
-//        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<Object>(Object.class));
-//        redisTemplate.setKeySerializer(stringRedisSerializer);
-//        redisTemplate.afterPropertiesSet();
         SerializationUtils.serialize(user);
         redisTemplate.execute(new RedisCallback<Long>() {
 
@@ -63,12 +56,6 @@ public class RedisTemplateTest {
     @Test
     public void testRedisStringGet()
     {
-//        StringRedisSerializer stringRedisSerializer=new StringRedisSerializer();
-//        Jackson2JsonRedisSerializer jackson2JsonRedisSerializer=new Jackson2JsonRedisSerializer<Object>(Object.class);
-//        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<Object>(Object.class));
-//        redisTemplate.setKeySerializer(stringRedisSerializer);
-//        redisTemplate.afterPropertiesSet();
-//        redisTemplate.delete("a");
         AUser user=  redisTemplate.execute(new RedisCallback<AUser>() {
 
         @Override

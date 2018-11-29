@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -111,6 +112,25 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-
-
+    /**
+     * Override this method to expose the {@link AuthenticationManager} from
+     * {@link #configure(AuthenticationManagerBuilder)} to be exposed as a Bean. For
+     * example:
+     * <p>
+     * <pre>
+     * &#064;Bean(name name="myAuthenticationManager")
+     * &#064;Override
+     * public AuthenticationManager authenticationManagerBean() throws Exception {
+     *     return super.authenticationManagerBean();
+     * }
+     * </pre>
+     *
+     * @return the {@link AuthenticationManager}
+     * @throws Exception
+     */
+    @Override
+    @Bean
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
 }

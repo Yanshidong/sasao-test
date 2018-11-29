@@ -18,7 +18,7 @@ import org.junit.Assert;
 
 import javax.transaction.Transactional;
 
-@MapperScan("com.wd7.sso")
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ApplicationTests {

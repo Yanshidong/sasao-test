@@ -1,12 +1,19 @@
 package com.wd7.sso.support;
 
+import com.wd7.sso.config.CustomeConfigurationOAuth2Properties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.connection.RedisStringCommands;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.types.Expiration;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.code.RandomValueAuthorizationCodeServices;
 import org.springframework.stereotype.Service;
+import org.springframework.util.SerializationUtils;
 
 import java.util.concurrent.TimeUnit;
 
@@ -17,18 +24,22 @@ public class MyAuthorizationCodeServices  extends RandomValueAuthorizationCodeSe
     @Autowired
     RedisTemplate<Object,Object> redisTemplate;
 
-    @Value("${oauth2.code.timeout}")
-    private Integer timeout;
-
-    @Value("${oauth2.code.prefix")
-    private String prefix;
+    @Autowired
+    CustomeConfigurationOAuth2Properties oAuth2Properties;
 
     @Override
     protected void store(String code, OAuth2Authentication authentication) {
 
         //存储一个code
-        redisTemplate.opsForValue().set(prefix+code,authentication,timeout, TimeUnit.SECONDS);
+        redisTemplate.execute(new RedisCallback<Long>() {
 
+            @Override
+            public Long doInRedis(RedisConnection connection) throws DataAccessException {
+                connection.set(getCodeKey(code).getBytes(), SerializationUtils.serialize(authentication),
+                        Expiration.from(oAuth2Properties.getCode().getTimeout(), TimeUnit.SECONDS), RedisStringCommands.SetOption.UPSERT);
+                return 1L;
+            }
+        });
 
 
     }
@@ -36,13 +47,31 @@ public class MyAuthorizationCodeServices  extends RandomValueAuthorizationCodeSe
     @Override
     protected OAuth2Authentication remove(String code) {
         //消费一个code
-        OAuth2Authentication oAuth2Authentication= (OAuth2Authentication) redisTemplate.opsForValue().get(code);
+        OAuth2Authentication oAuth2Authentication= redisTemplate.execute(new RedisCallback<OAuth2Authentication>() {
 
+            @Override
+            public OAuth2Authentication doInRedis(RedisConnection connection) throws DataAccessException {
+                byte[] keyByte = getCodeKey(code).getBytes();
+                byte[] valueByte = connection.get(keyByte);
+
+                if (valueByte != null) {
+                connection.del(keyByte);
+                    return (OAuth2Authentication) SerializationUtils.deserialize(valueByte);
+                }
+
+                return null;
+            }
+        });
         if(oAuth2Authentication==null)
         {
             return null;
         }
-        redisTemplate.delete(code);
+//        redisTemplate.delete(code);
         return oAuth2Authentication;
+    }
+
+    private String getCodeKey(String code)
+    {
+        return oAuth2Properties.getCode().getPrefix()+code;
     }
 }

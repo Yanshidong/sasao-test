@@ -1,12 +1,23 @@
 package com.wd7.sso;
 
+import com.wd7.sso.config.CustomeConfigurationOAuth2Properties;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Bean;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.connection.RedisStringCommands;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.types.Expiration;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.SerializationUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -19,22 +30,32 @@ public class RedisTemplateTest {
     @Autowired
     RedisTemplate<Object,Object> redisTemplate;
 
+    @Autowired
+    CustomeConfigurationOAuth2Properties customeConfigurationOAuth2Properties;
 
 
     @Test
     public void testRedisSet()
     {
-        AUser user=new AUser();
-        user.setBoy(true);
-        user.setIn(1);
-        user.setName("er");
+        AUser user=new AUser(1,"er",true);
+//        user.setBoy(true);
+//        user.setIn(1);
+//        user.setName("er");
 
 //        StringRedisSerializer stringRedisSerializer=new StringRedisSerializer();
 //        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<Object>(Object.class));
 //        redisTemplate.setKeySerializer(stringRedisSerializer);
 //        redisTemplate.afterPropertiesSet();
-        redisTemplate.opsForValue().set("a", user,10, TimeUnit.SECONDS);
+        SerializationUtils.serialize(user);
+        redisTemplate.execute(new RedisCallback<Long>() {
 
+            @Override
+            public Long doInRedis(RedisConnection connection) throws DataAccessException {
+                connection.set("a".getBytes(), SerializationUtils.serialize(user),
+                        Expiration.from(10, TimeUnit.MINUTES), RedisStringCommands.SetOption.UPSERT);
+                return 1L;
+            }
+        });
 //       redisTemplate.exec().set("a",user);
 
     }
@@ -47,8 +68,22 @@ public class RedisTemplateTest {
 //        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<Object>(Object.class));
 //        redisTemplate.setKeySerializer(stringRedisSerializer);
 //        redisTemplate.afterPropertiesSet();
-        redisTemplate.delete("a");
-        AUser user= (AUser) redisTemplate.opsForValue().get("a");
+//        redisTemplate.delete("a");
+        AUser user=  redisTemplate.execute(new RedisCallback<AUser>() {
+
+        @Override
+        public AUser doInRedis(RedisConnection connection) throws DataAccessException {
+            byte[] keyByte = "a".getBytes();
+            byte[] valueByte = connection.get(keyByte);
+
+            if (valueByte != null) {
+//                connection.del(keyByte);
+                return (AUser) SerializationUtils.deserialize(valueByte);
+            }
+
+            return null;
+        }
+    });
 //        System.out.println(user.toString());
         System.out.println(user == null?"0":"1");
     }
@@ -78,7 +113,7 @@ public class RedisTemplateTest {
 
         for(int i=0;i<1000000;i++)
         {
-            AUser aUser=new AUser();
+            AUser aUser=new AUser(i,"abc",true);
             aUser.setIn(i);
             aUser.setBoy(true);
             aUser.setName("abc");
@@ -88,6 +123,22 @@ public class RedisTemplateTest {
         return aUsers;
     }
 
+    @Test
+    public void testCustomProperties()
+    {
+
+        Integer timeout=customeConfigurationOAuth2Properties.getCode().getTimeout();
+
+       System.out.println(timeout);
+    }
+
+
+    @Test
+    public void testRedisGetSerialize()
+    {
+        redisTemplate.opsForValue().get("oauth2:codeQHYLWw");
+
+    }
 
 
 }

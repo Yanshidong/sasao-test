@@ -1,5 +1,6 @@
 package com.wd7.sso.config;
 
+import com.wd7.sso.support.MyAuthorizationCodeServices;
 import com.wd7.sso.support.MyClientDetailsService;
 import com.wd7.sso.support.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     @Autowired
     private MyUserDetailsService userDetailsService;
+
+    @Autowired
+    private MyAuthorizationCodeServices myAuthorizationCodeServices;
 
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
@@ -94,6 +98,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
 
         JdbcAuthorizationCodeServices jdbcAuthorizationCodeServices=new JdbcAuthorizationCodeServices(dataSource);
+
         TokenEnhancerChain  tokenEnhancerChain=new TokenEnhancerChain();
 
         //设置token存储
@@ -106,7 +111,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
         .userDetailsService(userDetailsService) //默认
 
-        .authorizationCodeServices(jdbcAuthorizationCodeServices) //jdbc
+        .authorizationCodeServices(myAuthorizationCodeServices) //jdbc
 
         .tokenEnhancer(tokenEnhancerChain)
 

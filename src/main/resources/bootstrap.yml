@@ -1,0 +1,61 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+spring:
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        max-wait: -1ms
+      shutdown-timeout: 100ms
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/wd71?characterEncoding=UTF-8
+    username: root
+    password: baicai@930715
+    driver-class-name: com.mysql.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  devtools:
+    restart:
+      enabled: true
+  application:
+    name: oauth-center
+  cloud:
+    config:
+      label: master
+      profile: dev
+      discovery:
+        enabled: true
+        service-id: configserver
+
+logging:
+  level:
+    root: info
+    org.springframework.web: error
+    org.springframework.security: debug
+    org.springframework.jpa: debug
+#    com.cjs.example.dao: info
+
+mybatis:
+  mapperLocations: classpath:mapper/*.xml
+  typeAliasesPackage: com.wd7.sso.entity
+
+
+wd7:
+  oauth2:
+    code:
+      timeout: 600
+      prefix: oauth2`code`
+

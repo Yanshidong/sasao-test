@@ -48,10 +48,9 @@ public class MainController {
         return "hahaha,欢迎"+(authentication.getPrincipal().toString())+"来到此页;";
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping("/userInfo")
-    public Principal userInfo(Principal principal) {
-        return principal;
+    public Principal userInfo(Authentication authentication) {
+        return authentication;
     }
 
     @RequestMapping("/user/{id}")
@@ -61,6 +60,7 @@ public class MainController {
     }
 
 
+    @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(value = "/login")
     public String userLogin()
     {

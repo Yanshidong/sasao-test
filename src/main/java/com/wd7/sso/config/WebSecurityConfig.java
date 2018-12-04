@@ -21,15 +21,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.token.auth.DefaultClientAuthenticationHandler;
 import org.springframework.security.oauth2.provider.ClientRegistrationService;
 import org.springframework.security.web.authentication.*;
-import org.springframework.security.web.authentication.logout.ForwardLogoutSuccessHandler;
-import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
-import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
-import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
+import org.springframework.security.web.authentication.logout.*;
+import org.springframework.security.web.csrf.CsrfLogoutHandler;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Objects;
 
 @Configuration
 @EnableWebSecurity
@@ -55,6 +55,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/css/**", "/js/**", "/plugins/**", "/favicon.ico");
 
+
     }
 
     @Override
@@ -75,10 +76,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         LogoutSuccessHandler customLogoutSuccessHandler=new CustomLogoutSuccessHandler();
 
 
+//        CompositeLogoutHandler compositeLogoutHandler=new CompositeLogoutHandler();
+//        CsrfLogoutHandler csrfLogoutHandler=new CsrfLogoutHandler();
+
 
         http
                 .authorizeRequests()    //以这个开头，然后配置需要放行的url，最后拦截其他所有url
-                .antMatchers("/logout","/login","/my/login").permitAll()
+                .antMatchers("/logout","/login","/my/login","/my/logout").permitAll()
                 .anyRequest().authenticated()
             .and().formLogin()
                 .successHandler(customAuthenticationSuccessHandler)//登录成功的后续处理,日志等
@@ -94,11 +98,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .and().rememberMe()
             .and().logout()
                   .logoutUrl("/my/logout")
+                    .deleteCookies("JSESSIONID")
+//                .addLogoutHandler(compositeLogoutHandler)
+                .clearAuthentication(true)
                     .logoutSuccessHandler(customLogoutSuccessHandler)//RestAPI调用时直接给个状态码返回
-//                    .logoutRequestMatcher()
 //                      .logoutSuccessHandler(simpleUrlLogoutSuccessHandler)//自定义登出后续处理
-                        .logoutSuccessHandler(forwardLogoutSuccessHandler)//重定向
-                  .logoutSuccessUrl("/login?logout=logout")
+//                        .logoutSuccessHandler(forwardLogoutSuccessHandler)//重定向
+
+                  .logoutSuccessUrl("/login")
                       .permitAll()
             .and()
                 .csrf()
@@ -111,6 +118,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+//    @Bean
+//    public PasswordEncoder passwordEncoder() {
+//        return new PasswordEncoder() {
+//            @Override
+//            public String encode(CharSequence charSequence) {
+//                BCryptPasswordEncoder bCryptPasswordEncoder=new BCryptPasswordEncoder();
+//                return bCryptPasswordEncoder.encode(charSequence.toString());
+//            }
+//
+//            @Override
+//            public boolean matches(CharSequence charSequence, String s) {
+//                BCryptPasswordEncoder bCryptPasswordEncoder=new BCryptPasswordEncoder();
+//                return true;
+//            }
+//        };
+//    }
 
     /**
      * Override this method to expose the {@link AuthenticationManager} from

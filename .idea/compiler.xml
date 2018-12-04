@@ -7,10 +7,23 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="cjs-oauth2-code-server" />
+        <module name="config" />
+        <module name="demo-client" />
+        <module name="gateway-zuul" />
+        <module name="registercenter" />
+        <module name="resourceserver" />
+        <module name="ribbon" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="cjs-oauth2-code-server" target="1.8" />
+      <module name="config" target="1.8" />
+      <module name="demo-client" target="1.8" />
+      <module name="gateway" target="1.8" />
+      <module name="gateway-zuul" target="1.8" />
+      <module name="registercenter" target="1.8" />
+      <module name="resourceserver" target="1.8" />
+      <module name="ribbon" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

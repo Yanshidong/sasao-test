@@ -4,6 +4,12 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/../resourceserver/pom.xml" />
+        <option value="$PROJECT_DIR$/../registercenter/pom.xml" />
+        <option value="$PROJECT_DIR$/../demo-client/pom.xml" />
+        <option value="$PROJECT_DIR$/../config/pom.xml" />
+        <option value="$PROJECT_DIR$/../gateway-zuul/pom.xml" />
+        <option value="$PROJECT_DIR$/../balance-ribbon/pom.xml" />
       </list>
     </option>
   </component>

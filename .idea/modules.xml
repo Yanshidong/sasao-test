@@ -3,6 +3,13 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/cjs-oauth2-code-server.iml" filepath="$PROJECT_DIR$/cjs-oauth2-code-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../config/config.iml" filepath="$PROJECT_DIR$/../config/config.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../demo-client/demo-client.iml" filepath="$PROJECT_DIR$/../demo-client/demo-client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../gateway-zuul/gateway-zuul.iml" filepath="$PROJECT_DIR$/../gateway-zuul/gateway-zuul.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../registercenter/registercenter.iml" filepath="$PROJECT_DIR$/../registercenter/registercenter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../resourceserver/resourceserver.iml" filepath="$PROJECT_DIR$/../resourceserver/resourceserver.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../balance-ribbon/ribbon.iml" filepath="$PROJECT_DIR$/../balance-ribbon/ribbon.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../springcloud-config/springcloud-config.iml" filepath="$PROJECT_DIR$/../springcloud-config/springcloud-config.iml" />
     </modules>
   </component>
 </project>
